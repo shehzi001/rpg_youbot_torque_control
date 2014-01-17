@@ -11,9 +11,11 @@ find_package(catkin REQUIRED
 	actionlib
 	std_srvs
 	brics_actuator
+	message_generation
 	trajectory_msgs
 	sensor_msgs
 	actionlib_msgs
+	roslib
 )
 
 find_package(Eigen REQUIRED)
@@ -57,6 +59,7 @@ catkin_package(
 	trajectory_msgs
 	sensor_msgs
 	actionlib_msgs
+	message_runtime
 )
 
 include_directories(
