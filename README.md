@@ -137,4 +137,23 @@ Then, you can launch the provided launch file
 which starts the Torque Controller and a Trajectory Generator Service. Then you can start the exapmple by running
 
     rosrun torque_example gwd_traj
+    
+
+==================================================================================
+#Running torque control on ROS-hydro
+
+*Step 1:Clone these repositories in hydro workspace
+
+    git@github.com:mas-group/youbot_description.git
+    git@github.com:mas-group/youbot_driver_ros_interface.git
+    git@github.com:mas-group/youbot_driver.git
+    git@github.com:shehzi001/rpg_youbot_torque_control.git
+
+*Step 2:Compile using catkin_make
+
+*Step 3:Running torque controller on real youbot
+
+    roslaunch youbot_driver_ros_interface youbot_driver.launch
+    roslaunch torque_controller torque_controller.launch
+    roslaunch torque_example torque_example.launch
 
