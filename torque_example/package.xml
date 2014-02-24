@@ -18,6 +18,7 @@
   <build_depend>ik_solver_service</build_depend>
   <build_depend>brics_actuator</build_depend>
   <build_depend>trajectory_msgs</build_depend>
+  <build_depend>control_msgs</build_depend>
   <build_depend>rpg_youbot_common</build_depend>
   <build_depend>torque_control</build_depend>
   <build_depend>trajectory_generator</build_depend>
@@ -26,5 +27,6 @@
   <run_depend>brics_actuator</run_depend>
   <run_depend>trajectory_msgs</run_depend>
   <run_depend>message_runtime</run_depend>
+  <run_depend>control_msgs</run_depend>
   
 </package>

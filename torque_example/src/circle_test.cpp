@@ -1,14 +1,12 @@
 #include "ros/ros.h"
 #include "trajectory_generator/Circle.h"
 #include "trajectory_msgs/JointTrajectoryPoint.h"
-#include "Eigen/Dense"
 #include <brics_actuator/JointPositions.h>
 #include <brics_actuator/JointVelocities.h>
 #include <geometry_msgs/Pose.h>
 #include <iostream>
 #include <boost/units/systems/si.hpp>
-#include <torque_control/torque_trajectoryAction.h>
-#include <torque_control/step.h>
+#include <control_msgs/FollowJointTrajectoryAction.h>
 #include <actionlib/client/simple_action_client.h>
 #include "rpg_youbot_common.h"
 
@@ -20,10 +18,8 @@ int main(int argc, char **argv)
   ros::NodeHandle nh;
   ros::Rate lr(500);
   ros::ServiceClient circle_client = nh.serviceClient<trajectory_generator::Circle>("Circular_Trajectory");
-  ros::Publisher arm_pub_pos = nh.advertise<brics_actuator::JointPositions>("/arm_1/arm_controller/position_command",
-                                                                            1);
-  actionlib::SimpleActionClient<torque_control::torque_trajectoryAction> ac("torque_control", true);
-
+  ros::Publisher arm_pub_pos = nh.advertise<brics_actuator::JointPositions>("/arm_1/arm_controller/position_command",1);
+  actionlib::SimpleActionClient<control_msgs::FollowJointTrajectoryAction> acc("torque_control", true);
 
   double first_pt[5];
   bool feasible = true;
@@ -84,20 +80,21 @@ int main(int argc, char **argv)
     ROS_INFO("READY FOR TORQUE?");
     int x;
     cin >> x;
-    ac.waitForServer(); //will wait for infinite time
+    acc.waitForServer(); //will wait for infinite time
     ROS_INFO("Action server started, sending goal.");
 
-    torque_control::torque_trajectoryGoal goal;
+    //torque_control::torque_trajectoryGoal goal;
+    control_msgs::FollowJointTrajectoryGoal goal;
     goal.trajectory = traj;
 
-    ac.sendGoal(goal);
+    acc.sendGoal(goal);
 
     //wait for the action to return
-    bool finished_before_timeout = ac.waitForResult(ros::Duration(60.0));
+    bool finished_before_timeout = acc.waitForResult(ros::Duration(60.0));
 
     if (finished_before_timeout)
     {
-      actionlib::SimpleClientGoalState state = ac.getState();
+      actionlib::SimpleClientGoalState state = acc.getState();
       ROS_INFO("Action finished: %s", state.toString().c_str());
     }
     else

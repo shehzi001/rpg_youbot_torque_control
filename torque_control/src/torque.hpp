@@ -27,6 +27,7 @@
 #include <trajectory_msgs/JointTrajectory.h>
 #include <actionlib/server/simple_action_server.h>
 #include <torque_control/torque_trajectoryAction.h>
+#include <control_msgs/FollowJointTrajectoryAction.h>
 #include <torque_control/step.h>
 #include <std_srvs/Empty.h>
 #include <Eigen/Dense>
@@ -58,9 +59,12 @@ public:
   ros::Subscriber joint_state_sub;
 
   actionlib::SimpleActionServer<torque_control::torque_trajectoryAction> traj;
+  actionlib::SimpleActionServer<control_msgs::FollowJointTrajectoryAction> traj_follow;
   std::string action_name;
   torque_control::torque_trajectoryResult result;
+  control_msgs::FollowJointTrajectoryResult result_controlmsgs;
   torque_control::torque_trajectoryFeedback feedback;
+	control_msgs::FollowJointTrajectoryFeedback feedback_controlmsgs;
 
   ros::ServiceServer srv_step;
   ros::ServiceServer srv_grav_on;
@@ -72,6 +76,8 @@ private:
   void jointstateCallback(const sensor_msgs::JointState::ConstPtr& msg);
 
   void followTrajectory(const torque_control::torque_trajectoryGoalConstPtr & trajectory);
+  
+  void followTrajectory_controlmsgs(const control_msgs::FollowJointTrajectoryGoalConstPtr & trajectory);
 
   bool stepCallback(torque_control::step::Request &req, torque_control::step::Response &res);
 

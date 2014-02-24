@@ -8,6 +8,7 @@
 #include "ros/ros.h"
 #include "trajectory_generator/CStoCS.h"
 #include "trajectory_msgs/JointTrajectoryPoint.h"
+#include "Eigen/Dense"
 #include <brics_actuator/JointPositions.h>
 #include <brics_actuator/JointVelocities.h>
 #include <geometry_msgs/Pose.h>
@@ -170,7 +171,7 @@ int main(int argc, char **argv)
       cin >> x;
       ac.waitForServer(); //will wait for infinite time
       ROS_INFO("Action server started, sending goal.");
-      
+
       control_msgs::FollowJointTrajectoryGoal goal;
       goal.trajectory = traj;
 

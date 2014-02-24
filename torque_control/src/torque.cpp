@@ -12,7 +12,7 @@
 using namespace std;
 
 TorqueController::TorqueController(ros::NodeHandle& nh, std::string name) :
-    traj(nh, name, boost::bind(&TorqueController::followTrajectory, this, _1), false), DOF(5), duration(0)
+    traj(nh, name, boost::bind(&TorqueController::followTrajectory, this, _1), false), DOF(5), duration(0),traj_follow(nh, name, boost::bind(&TorqueController::followTrajectory_controlmsgs, this, _1),false)
 
 {
   // arm joints (always 5)
@@ -30,9 +30,9 @@ TorqueController::TorqueController(ros::NodeHandle& nh, std::string name) :
   pdt.open("values/pd_tor.txt", std::ios::out);
   eft.open("values/ef_tor.txt", std::ios::out);
   action_name = name;
-  mode = "idle";
+  mode = "gravity";
 
-  nh.param("youBotDriverCycleFrequencyInHz", lr, 50.0);
+  nh.param("youBotDriverCycleFrequencyInHz", lr,50.0);
 
   joint_state_sub = nh.subscribe("/joint_states", 1, &TorqueController::jointstateCallback, this);
 
@@ -43,7 +43,8 @@ TorqueController::TorqueController(ros::NodeHandle& nh, std::string name) :
   torque_command_pub = nh.advertise<brics_actuator::JointTorques>("/arm_1/arm_controller/torques_command", 1);
   pos_command_pub = nh.advertise<brics_actuator::JointPositions>("/arm_1/arm_controller/position_command", 1);
 
-  traj.start();
+  //traj.start();
+  traj_follow.start();
 }
 
 bool TorqueController::initialize()
@@ -154,6 +155,73 @@ void TorqueController::jointstateCallback(const sensor_msgs::JointState::ConstPt
     ROS_INFO("NO JOINT STATES FOR YOUBOT ARM RECEIVED");
   }
 }
+void TorqueController::followTrajectory_controlmsgs(const control_msgs::FollowJointTrajectoryGoalConstPtr & trajectory)
+{
+	mode = "trajectory";
+  ROS_INFO("Following Trajectory");
+  Eigen::VectorXd pos_err(5), vel_err(5), a_pos(5), d_pos(5);
+  int rval;
+  ros::Rate loop_rate(lr);
+  trajectory_msgs::JointTrajectory j_traj = trajectory->trajectory;
+  
+  while (!j_traj.points.empty())
+  {
+		 
+    ros::spinOnce();
+    if(!pointToEigen(q_tra, qdot_tra, qdotdot_tra, j_traj.points.back(),j_traj.joint_names))
+    {
+      ros::shutdown();
+    }
+    j_traj.points.pop_back();
+
+    //translate youbot trajectories into torque trajectories for torque calculation
+    q_tra = youbot2torque(q_tra);
+    qdot_tra(2) = -qdot_tra(2);
+    qdotdot_tra(2) = -qdotdot_tra(2);
+
+    pos_err = m_q - q_tra;
+    vel_err = m_qdot - qdot_tra;
+   
+    calcTorques(q_tra, qdot_tra, qdotdot_tra, m_torques);
+
+    writeToFile(fft, m_torques);
+
+    pd_controller_Torques(Kp, Kv, m_q, pos_err, vel_err, m_torques);
+
+    rval = limitTorques(m_torques);
+
+    //translate youbot values into torque values for saving
+    d_pos = torque2youbot(q_tra);
+    a_pos = torque2youbot(m_q);
+    qdot_tra(2) = -qdot_tra(2);
+    m_qdot(2) = -m_qdot(2);
+    qdotdot_tra(2) = -qdotdot_tra(2);
+    m_qdotdot(2) = -m_qdotdot(2);
+
+    writeToFile(rp, d_pos);
+    writeToFile(ap, a_pos);
+    writeToFile(rv, qdot_tra);
+    writeToFile(av, m_qdot);
+    writeToFile(ra, qdotdot_tra);
+    writeToFile(pdt, m_torques);
+    writeToFile(eft, eff_torques);
+    if (rval != 0)
+    {
+      j_traj.points.clear();
+      ros::shutdown();
+      break;
+    }
+    torque_command_pub.publish(generate_joint_torque_msg(m_torques));
+    ros::spinOnce();
+    loop_rate.sleep();
+  }
+  pos_command_pub.publish(stop);
+  ros::spinOnce();
+  loop_rate.sleep();
+  //traj.setSucceeded(result);
+  traj_follow.setSucceeded(result_controlmsgs);
+  mode = "idle"; 
+}
 
 void TorqueController::followTrajectory(const torque_control::torque_trajectoryGoalConstPtr & trajectory)
 {
@@ -179,7 +247,6 @@ void TorqueController::followTrajectory(const torque_control::torque_trajectoryG
 
     pos_err = m_q - q_tra;
     vel_err = m_qdot - qdot_tra;
-
     calcTorques(q_tra, qdot_tra, qdotdot_tra, m_torques);
 
     writeToFile(fft, m_torques);

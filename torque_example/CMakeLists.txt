@@ -10,6 +10,7 @@ find_package(catkin REQUIRED
     ik_solver_service
     brics_actuator
     trajectory_msgs
+    control_msgs
 	rpg_youbot_common
 	torque_control
 	trajectory_generator
@@ -23,6 +24,7 @@ catkin_package(
   CATKIN_DEPENDS
     brics_actuator
     trajectory_msgs
+    control_msgs
     message_runtime
 )
 
@@ -33,15 +35,22 @@ include_directories(
 )
 
 
-add_executable(gwd_traj src/ltr.cpp ../rpg_youbot_common/src/rpg_youbot_common.cpp)
-target_link_libraries(gwd_traj
+add_executable(example_circle src/example_circle.cpp ../rpg_youbot_common/src/rpg_youbot_common.cpp)
+target_link_libraries(example_circle
   ${catkin_LIBRARIES}
   ${Eigen_LIBRARIES}
   ${Boost_LIBRARIES}
 )
 
-add_executable(circle_traj src/circle.cpp ../rpg_youbot_common/src/rpg_youbot_common.cpp)
-target_link_libraries(circle_traj
+add_executable(example_JStoJS src/example_JStoJS.cpp ../rpg_youbot_common/src/rpg_youbot_common.cpp)
+target_link_libraries(example_JStoJS
+  ${catkin_LIBRARIES}
+  ${Eigen_LIBRARIES}
+  ${Boost_LIBRARIES}
+)
+
+add_executable(example_CStoCS src/example_CStoCS.cpp ../rpg_youbot_common/src/rpg_youbot_common.cpp)
+target_link_libraries(example_CStoCS
   ${catkin_LIBRARIES}
   ${Eigen_LIBRARIES}
   ${Boost_LIBRARIES}

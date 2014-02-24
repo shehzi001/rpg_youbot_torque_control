@@ -13,6 +13,7 @@ find_package(catkin REQUIRED
 	brics_actuator
 	message_generation
 	trajectory_msgs
+	control_msgs
 	sensor_msgs
 	actionlib_msgs
 	roslib
@@ -49,6 +50,7 @@ generate_messages(
   DEPENDENCIES
     brics_actuator
     trajectory_msgs
+    control_msgs
     sensor_msgs
 	actionlib_msgs
 )
@@ -58,6 +60,7 @@ catkin_package(
 	brics_actuator
 	trajectory_msgs
 	sensor_msgs
+	control_msgs
 	actionlib_msgs
 	message_runtime
 )
