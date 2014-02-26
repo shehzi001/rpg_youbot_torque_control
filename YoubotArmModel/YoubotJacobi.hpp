@@ -70,7 +70,4 @@ inline void getInverseJacobi(MatrixXd & Jinv, KDL::JntArray & pos)
 	Jtemp=Jtemp.inverse();
 	Jinv=Jtemp*Jt;
 }
-
-
-
 #endif /* YOUBOTJACOBI_HPP_ */

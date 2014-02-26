@@ -529,6 +529,7 @@ int TrajectoryGenerator::transformTrajectoryCStoJS()
     fc_srv.request.ikarray.insert(fc_srv.request.ikarray.begin(), request);
     itrpy--;
   }
+  cout << "Transforming CS to JS Trajectory, this might take a while" << endl;
   if (solve_fully_constrained_ik_array_client.call(fc_srv))
   {
     while (!fc_srv.response.ikresp.empty())
@@ -537,6 +538,7 @@ int TrajectoryGenerator::transformTrajectoryCStoJS()
       fc_srv.response.ikresp.pop_back();
       if (response.feasible)
       {
+				
         cur_pos(0) = response.joint_angles[0];
         cur_pos(1) = response.joint_angles[1];
         cur_pos(2) = response.joint_angles[2];
@@ -551,6 +553,7 @@ int TrajectoryGenerator::transformTrajectoryCStoJS()
       }
       else
       {
+				cout << "Transforming CS to JS Trajectory, this might take a while" << endl;
         cur_pos.setZero(DOF);
         cout << "fully constrained not feasible" << endl;
         q_tra.clear();
@@ -558,6 +561,7 @@ int TrajectoryGenerator::transformTrajectoryCStoJS()
       }
       q_tra.insert(q_tra.begin(), cur_pos);
     }
+   
     //Velocity and Acceleration Profiles by numerical differentiation
     std::vector<Eigen::VectorXd>::iterator pp = q_tra.end();
     std::vector<Eigen::VectorXd>::iterator np = q_tra.end() - 2;
@@ -612,7 +616,7 @@ bool TrajectoryGenerator::checkJointLimits(Eigen::VectorXd & pos)
     {
       if (pos(i) > 0 || pos(i) < -(fabs(joint_max_angles[i]) + fabs(joint_min_angles[i])))
       {
-        ROS_WARN("trajectory not feasible, joint position %d outside of range %f , %f", i + 1,
+        ROS_WARN("trajectory not feasible, joint position %f of joint %d outside of range %f , %f", pos(i),i + 1,
                  -(fabs(joint_max_angles[i]) + fabs(joint_min_angles[i])), 0.0);
         q_tra.clear();
         qdot_tra.clear();
@@ -624,7 +628,7 @@ bool TrajectoryGenerator::checkJointLimits(Eigen::VectorXd & pos)
     {
       if (pos(i) < 0 || pos(i) > fabs(joint_max_angles[i]) + fabs(joint_min_angles[i]))
       {
-        ROS_WARN("trajectory not feasible, joint position %d outside of range %f , %f", i + 1, 0.0,
+        ROS_WARN("trajectory not feasible, joint position %f of joint %d outside of range %f , %f", pos(i), i + 1, 0.0,
                  (fabs(joint_max_angles[i]) + fabs(joint_min_angles[i])));
         q_tra.clear();
         qdot_tra.clear();

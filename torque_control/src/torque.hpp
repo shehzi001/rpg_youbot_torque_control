@@ -18,9 +18,11 @@
 #include <boost/units/systems/si.hpp>
 #include <boost/units/io.hpp>
 
+#include "trajectory_generator/JStoJS.h"
 #include <brics_actuator/CartesianWrench.h>
 #include <brics_actuator/JointTorques.h>
 #include <brics_actuator/JointPositions.h>
+#include <brics_actuator/JointVelocities.h>
 #include <sensor_msgs/JointState.h>
 #include <geometry_msgs/Pose.h>
 #include <std_msgs/String.h>
@@ -69,6 +71,7 @@ public:
   ros::ServiceServer srv_step;
   ros::ServiceServer srv_grav_on;
   ros::ServiceServer srv_grav_off;
+  ros::ServiceClient js2js_client;
 
   std::string mode;
 
@@ -77,7 +80,11 @@ private:
 
   void followTrajectory(const torque_control::torque_trajectoryGoalConstPtr & trajectory);
   
+  void generateSparseTrajectory(const control_msgs::FollowJointTrajectoryGoalConstPtr & trajectory);
+  
   void followTrajectory_controlmsgs(const control_msgs::FollowJointTrajectoryGoalConstPtr & trajectory);
+  
+  void followTrajectory_moveit(trajectory_msgs::JointTrajectory j_traj);
 
   bool stepCallback(torque_control::step::Request &req, torque_control::step::Response &res);
 
@@ -95,7 +102,13 @@ private:
   geometry_msgs::Pose m_tar_pos;
   sensor_msgs::JointState m_joint_state;
   brics_actuator::JointPositions stop;
+  std::vector<brics_actuator::JointPositions> joint_points;
+  std::vector<brics_actuator::JointVelocities> joint_vels;
+  trajectory_generator::JStoJS js2js;
+  
   double lr;
+  double max_vel;
+	double max_acc;
 
   std::ofstream rp;
   std::ofstream ap;
