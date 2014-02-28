@@ -10,6 +10,6 @@ const double joint_max_angles[5] = {2.9496,1.5707,2.5481,1.7889,2.9234};
 const double joint_min_vel[5] = {-1.0,-1.0,-1.0,-1.0,-1.0};
 const double joint_max_vel[5] = {1.0,1.0,1.0,1.0,1.0};
 const double joint_offsets[5] = {2.9496, 1.1344, -2.5481, 1.7889, 2.9234};
-const double joint_torque_max[5] = {9.5,9.5,6.0,2.0,1.0};
+const double joint_torque_max[5] =  {6.5,6.5,4.0,2.0,1.0};
 
 #endif

@@ -80,12 +80,14 @@ private:
 
   void followTrajectory(const torque_control::torque_trajectoryGoalConstPtr & trajectory);
   
-  void generateSparseTrajectory(const control_msgs::FollowJointTrajectoryGoalConstPtr & trajectory);
+  void followTrajectoryControlMsgs(const control_msgs::FollowJointTrajectoryGoalConstPtr & trajectory);
   
-  void followTrajectory_controlmsgs(const control_msgs::FollowJointTrajectoryGoalConstPtr & trajectory);
+  void followDenseTrajectory(trajectory_msgs::JointTrajectory trajectory);
   
-  void followTrajectory_moveit(trajectory_msgs::JointTrajectory j_traj);
-
+  void generateDenseTrajectory(const control_msgs::FollowJointTrajectoryGoalConstPtr & trajectory);
+  
+  bool checkJointLimits(trajectory_msgs::JointTrajectory &j_traj);
+  
   bool stepCallback(torque_control::step::Request &req, torque_control::step::Response &res);
 
   bool gravityOnCallback(std_srvs::Empty::Request &req, std_srvs::Empty::Request &res);

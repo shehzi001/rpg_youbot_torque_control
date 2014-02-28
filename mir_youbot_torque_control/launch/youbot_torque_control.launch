@@ -1,0 +1,17 @@
+<launch>
+
+	<!-- Launch the torque controller node -->
+	<node name="torque_control" pkg="torque_control" type="torque_control" output="screen" ns="arm_1/arm_controller">
+		<remap from="~joint_states" to="/joint_states" />
+		<remap from="~torques_command" to="/arm_1/arm_controller/torques_command" />
+		<remap from="~position_command" to="/arm_1/arm_controller/position_command" />
+		
+	</node>
+
+	<!-- Launch the trajectory generator service -->
+	<node name="trajectory_generator" pkg="trajectory_generator" type="trajectory_service" output="screen" />
+	
+	<!-- Launch the trajectory generator service -->
+	<node name="ik_solver_service" pkg="ik_solver_service" type="ik_solver_service" output="screen" />
+
+</launch>

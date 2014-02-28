@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+<package>
+  <name>rpg_torque_control_moveit_interface</name>
+  <version>0.1.0</version>
+  <description>The rpg_torque_control_moveit_interface package</description>
+  <maintainer email="shehzi001@gmail.com">Shehzad Ahmed</maintainer>
+  
+  <license>BSD</license>
+
+  <buildtool_depend>catkin</buildtool_depend>
+  <build_depend>brics_actuator</build_depend>
+  <build_depend>control_msgs</build_depend>
+  <build_depend>message_generation</build_depend>
+  <build_depend>roscpp</build_depend>
+  <build_depend>rpg_youbot_common</build_depend>
+  <build_depend>torque_control</build_depend>
+  <build_depend>trajectory_generator</build_depend>
+  <build_depend>trajectory_msgs</build_depend>
+  <build_depend>actionlib</build_depend>
+  <build_depend>actionlib_msgs</build_depend>
+  <build_depend>roslib</build_depend>
+  <build_depend>control_msgs</build_depend>
+  
+  
+  <run_depend>brics_actuator</run_depend>
+  <run_depend>control_msgs</run_depend>
+  <run_depend>roscpp</run_depend>
+  <run_depend>rpg_youbot_common</run_depend>
+  <run_depend>torque_control</run_depend>
+  <run_depend>trajectory_generator</run_depend>
+  <run_depend>trajectory_msgs</run_depend>
+  <run_depend>actionlib_msgs</run_depend>
+  <run_depend>message_runtime</run_depend>
+
+</package>

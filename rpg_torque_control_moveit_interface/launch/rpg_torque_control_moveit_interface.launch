@@ -1,0 +1,8 @@
+<launch>
+
+  <!-- Launch the torque controller node -->
+  <node name="rpg_torque_control_moveit_interface" pkg="rpg_torque_control_moveit_interface" type="rpg_torque_control_moveit_interface" output="screen" ns="arm_1/arm_controller">
+
+  </node>
+
+</launch>
