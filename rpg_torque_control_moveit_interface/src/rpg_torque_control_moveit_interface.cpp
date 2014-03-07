@@ -65,6 +65,7 @@ void RPGTorqueControlMoveitInterface::generateDenseTrajectory(const control_msgs
      joint_vels[iterator].velocities[j].value = vel;//trajectory_in.points[iterator].velocities[j];
     }
     
+    // checking for last trajectory point to set the velocity at zero.
     if((trajectory_in.points.size() - iterator) == 2)
     {
         vel = 0.0;
