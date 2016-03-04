@@ -563,14 +563,16 @@ void TorqueController::gravityCompensation()
   ros::Rate loop_rate(lr);
   Eigen::VectorXd a_pos(5);
   a_pos = torque2youbot(m_q);
-  writeToFile(rp, a_pos);
+  
+
+  /*writeToFile(rp, a_pos);
   writeToFile(ap, a_pos);
   writeToFile(rv, m_qdot);
   writeToFile(av, m_qdot);
   writeToFile(ra, qdotdot_tra.setZero(DOF));
   writeToFile(fft, m_torques);
   writeToFile(pdt, m_torques);
-  writeToFile(eft, eff_torques);
+  writeToFile(eft, eff_torques);*/
   m_qdot.setZero(DOF);
   m_qdotdot.setZero(DOF);
   calcTorques(m_q, m_qdot, m_qdotdot, m_torques);

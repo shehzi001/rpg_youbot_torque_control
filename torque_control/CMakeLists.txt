@@ -69,10 +69,10 @@ include_directories(
   ${catkin_INCLUDE_DIRS}
   ${Eigen_INCLUDE_DIRS}
   ${Boost_INCLUDE_DIRS}  
-  ../YoubotArmModel
+  YoubotArmModel
 )
 
-add_executable(torque_control src/torque.cpp)
+add_executable(torque_control src/torque_test.cpp)
 add_dependencies(torque_control ${PROJECT_NAME}_generate_messages_cpp)
 target_link_libraries(torque_control
   ${catkin_LIBRARIES}
